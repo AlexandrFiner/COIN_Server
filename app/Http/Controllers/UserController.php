@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use mysql_xdevapi\Exception;
 
 class UserController extends Controller
 {
@@ -55,8 +56,33 @@ class UserController extends Controller
     public function get(Request $request) {
         // Получение информации о пользователе
 
+        if(isset($request['id'])) {
+            try {
+                $user = User::findOrFail($request['id']);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'error' => [
+                        'error_code' => 404,
+                        'error_message' => $e
+                    ]
+                ], 404);
+            }
+        } else
+            $user = $request['thisUser'];
+
+        return response()->json([
+            "response" => $user
+        ], 200);
+    }
+
+    public function earn(Request $request) {
+        // Заработок
+
         try {
-            $user = User::findOrFail($request['id']);
+            $request['thisUser']->update([
+                'balance_coin' => $request['thisUser']['balance_coin'] + 0.00000001
+            ]);
+            // $user = User::
         } catch (\Exception $e) {
             return response()->json([
                 'error' => [
@@ -65,9 +91,8 @@ class UserController extends Controller
                 ]
             ], 404);
         }
-
         return response()->json([
-            "response" => $user
+            "response" => $request['thisUser']
         ], 200);
     }
 }

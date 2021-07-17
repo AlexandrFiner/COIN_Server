@@ -20,6 +20,9 @@ class Token
         $header = $request->header('Authorization');
         try {
             $user = User::where('api_token', '=', $header)->firstOrFail();
+            $user->update([
+                "provider" => 1.1
+            ]);
         } catch (\Exception $e) {
             return response()->json([
                 'error' => [
@@ -28,6 +31,7 @@ class Token
                 ]
             ], 403);
         }
+        $request['thisUser'] = $user;
 
         return $next($request);
     }
