@@ -22,8 +22,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 */
 
 // Авторизация
-Route::middleware('vkminiapps', 'throttle:20')->post('/users.auth', [UserController::class, 'auth']);
+Route::middleware('cors', 'vkminiapps', 'throttle:20')->post('/users.auth', [UserController::class, 'auth']);
 // Регистрация
-Route::middleware('vkminiapps', 'throttle:20')->post('/users.register', [UserController::class, 'register']);
+Route::middleware('cors', 'vkminiapps', 'throttle:20')->post('/users.register', [UserController::class, 'register']);
 // Получение данных по ID
-Route::middleware('token', 'throttle:120')->post('/users.get', [UserController::class, 'get']);
+Route::middleware('cors', 'token', 'throttle:120')->post('/users.get', [UserController::class, 'get']);
