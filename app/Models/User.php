@@ -12,4 +12,8 @@ class User extends Model
     protected $fillable = [
         'login', 'password', 'provider', 'api_token'
     ];
+
+    protected $hidden = [
+        'password', 'api_token'
+    ];
 }

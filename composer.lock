@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9a3fc7e6ae250e7135da3e043941710c",
+    "content-hash": "b85a1724cfa1ee33d578af742b56399a",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1411,6 +1411,47 @@
                 }
             ],
             "time": "2021-01-18T20:58:21+00:00"
+        },
+        {
+            "name": "mistersaal/laravel-vk-mini-apps-auth",
+            "version": "v1.1.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mistersaal/laravel-vk-mini-apps-auth.git",
+                "reference": "7925b953559b1d5924e15ed220cab53751033a6e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mistersaal/laravel-vk-mini-apps-auth/zipball/7925b953559b1d5924e15ed220cab53751033a6e",
+                "reference": "7925b953559b1d5924e15ed220cab53751033a6e",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": ">=7"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Mistersaal\\VkMiniAppsAuth\\VkMiniAppsAuthServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Mistersaal\\VkMiniAppsAuth\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Пакет для аутентификации пользователя VK по подписи VK Mini Apps для Laravel",
+            "support": {
+                "issues": "https://github.com/mistersaal/laravel-vk-mini-apps-auth/issues",
+                "source": "https://github.com/mistersaal/laravel-vk-mini-apps-auth/tree/v1.1.6"
+            },
+            "time": "2020-09-11T13:21:58+00:00"
         },
         {
             "name": "monolog/monolog",

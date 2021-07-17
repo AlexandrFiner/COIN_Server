@@ -15,9 +15,15 @@ use \App\Http\Controllers\UserController;
 |
 */
 
+/*
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+*/
 
+// Авторизация
+Route::post('/users.auth', [UserController::class, 'auth']);
+// Регистрация
 Route::post('/users.register', [UserController::class, 'register']);
+// Получение данных по ID
 Route::post('/users.get', [UserController::class, 'get']);
