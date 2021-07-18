@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\UserController;
+use \App\Http\Controllers\TopController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,6 +26,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::middleware('cors', 'vkminiapps', 'throttle:20')->post('/users.auth', [UserController::class, 'auth']);
 // Регистрация
 Route::middleware('cors', 'vkminiapps', 'throttle:20')->post('/users.register', [UserController::class, 'register']);
+
+// Получаем топ
+Route::middleware('cors', 'throttle:20')->post('/top.get', [TopController::class, 'get']);
 
 // Получение данных по ID
 Route::middleware('cors', 'token', 'throttle:120')->post('/users.get', [UserController::class, 'get']);

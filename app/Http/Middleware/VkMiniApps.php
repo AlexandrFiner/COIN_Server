@@ -31,6 +31,15 @@ class VkMiniApps
             $sign_params[$name] = $value;
         }
 
+        if(!isset($query_params['sign'])) {
+            return response()->json([
+                "error" => [
+                    "error_code" => 403,
+                    "error_message" => "You have wrong bearer token"
+                ]
+            ], 403);
+        }
+
         ksort($sign_params);
         $sign_params_query = http_build_query($sign_params);
         $sign = rtrim(strtr(base64_encode(hash_hmac('sha256', $sign_params_query, $client_secret, true)), '+/', '-_'), '=');
