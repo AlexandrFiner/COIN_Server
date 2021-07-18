@@ -19,10 +19,20 @@ class UserController extends Controller
                 ]
             ], 200);
         }
+
+        $data = $request->request->all();
+        $group = 0;
+        if(isset($data['group'])) {
+            // Если играет через группу, проверяем на существование в базе такой группы
+            $group = $data['group']['id'];
+        }
+
         $token = Str::random(60);
         $user->update([
-            "api_token" => $token
+            "api_token" => $token,
+            "group_vk" => $group
         ]);
+
         return response()->json([
             "response" => $user
         ], 200);

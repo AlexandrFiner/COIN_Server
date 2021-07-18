@@ -25,10 +25,10 @@ class Token
         } catch (\Exception $e) {
             return response()->json([
                 'error' => [
-                    'error_code' => 403,
+                    'error_code' => 1000,
                     'error_message' => 'Wrong api token'
                 ]
-            ], 403);
+            ], 200);
         }
         $request->merge(['user' => $user ]);
         $request->setUserResolver(function () use ($user) {

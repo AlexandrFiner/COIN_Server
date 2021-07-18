@@ -41,7 +41,7 @@ class VkMiniApps
                     "error_code" => 403,
                     "error_message" => "You must send sign"
                 ]
-            ], 403);
+            ], 200);
         }
 
         if($sign !== $query_params['sign']) {
@@ -50,10 +50,22 @@ class VkMiniApps
                     "error_code" => 403,
                     "error_message" => "You have wrong bearer token"
                 ]
-            ], 403);
+            ], 200);
         }
 
+
         $user = $query_params['vk_user_id'];        // Кто сделал запрос
+        if(isset($query_params['vk_group_id'])) {
+            $group['id'] = (int)$query_params['vk_group_id'];
+            $group['isAdmin'] = false;
+            if(isset($query_params['vk_viewer_group_role']) && $query_params['vk_viewer_group_role'] === 'admin') {
+                // Это админ
+
+                $group['isAdmin'] = true;
+            }
+            $request->request->add(['group' => $group]);
+        }
+
         $request->merge(['user' => $user ]);
         $request->setUserResolver(function () use ($user) {
             return $user;
