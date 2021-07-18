@@ -66,6 +66,8 @@ class Kernel extends HttpKernel
         'vkminiapps' => \App\Http\Middleware\VkMiniApps::class,
         'cors' => \App\Http\Middleware\Cors::class,
         'token' => \App\Http\Middleware\Token::class,
-        'admin' => \App\Http\Middleware\Admin::class
+        'donut' => \App\Http\Middleware\Donut::class,
+        'admin' => \App\Http\Middleware\Admin::class,
+        'moderator' => \App\Http\Middleware\Moderator::class
     ];
 }

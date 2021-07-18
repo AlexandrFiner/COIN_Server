@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\UserController;
 use \App\Http\Controllers\TopController;
 use \App\Http\Controllers\AdminController;
+use \App\Http\Controllers\ModeratorController;
+use \App\Http\Controllers\DonutController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,5 +40,11 @@ Route::middleware('cors', 'token', 'throttle:240')->post('/users.earn', [UserCon
 
 
 
-// Админские штучки
+// Админы
 Route::middleware('cors', 'token', 'admin', 'throttle:240')->post('/admin', [AdminController::class, 'index']);
+
+// Модераторы
+Route::middleware('cors', 'token', 'moderator', 'throttle:240')->post('/moderator', [ModeratorController::class, 'index']);
+
+// Доны
+Route::middleware('cors', 'token', 'donut', 'throttle:240')->post('/donut', [DonutController::class, 'index']);
