@@ -20,9 +20,7 @@ class Token
         $header = $request->header('Authorization');
         try {
             $user = User::where('api_token', '=', $header)->firstOrFail();
-            $user->update([
-                "provider" => 1.1
-            ]);
+
         } catch (\Exception $e) {
             return response()->json([
                 'error' => [
@@ -31,7 +29,13 @@ class Token
                 ]
             ], 403);
         }
-        $request['thisUser'] = $user;
+        $request->merge(['user' => $user ]);
+        $request->setUserResolver(function () use ($user) {
+            return $user;
+        });
+
+// if you dump() you can now see the $request has it
+        // var_dump($request->user());
 
         return $next($request);
     }

@@ -68,7 +68,7 @@ class UserController extends Controller
                 ], 404);
             }
         } else
-            $user = $request['thisUser'];
+            $user = $request->user();
 
         return response()->json([
             "response" => $user
@@ -79,8 +79,8 @@ class UserController extends Controller
         // Заработок
 
         try {
-            $request['thisUser']->update([
-                'balance_coin' => $request['thisUser']['balance_coin'] + 0.00000001
+            $request->user()->update([
+                'balance_coin' => $request->user()->balance_coin + $request->user()->mining_speed
             ]);
             // $user = User::
         } catch (\Exception $e) {
@@ -92,7 +92,7 @@ class UserController extends Controller
             ], 404);
         }
         return response()->json([
-            "response" => $request['thisUser']
+            "response" => $request->user()
         ], 200);
     }
 }
