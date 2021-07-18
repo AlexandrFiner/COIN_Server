@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\UserController;
 use \App\Http\Controllers\TopController;
+use \App\Http\Controllers\AdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,3 +35,8 @@ Route::middleware('cors', 'throttle:20')->post('/top.get', [TopController::class
 Route::middleware('cors', 'token', 'throttle:120')->post('/users.get', [UserController::class, 'get']);
 // Заработок
 Route::middleware('cors', 'token', 'throttle:240')->post('/users.earn', [UserController::class, 'earn']);
+
+
+
+// Админские штучки
+Route::middleware('cors', 'token', 'admin', 'throttle:240')->post('/admin', [AdminController::class, 'index']);

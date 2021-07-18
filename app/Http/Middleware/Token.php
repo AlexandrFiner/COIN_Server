@@ -18,6 +18,7 @@ class Token
     public function handle(Request $request, Closure $next)
     {
         $header = $request->header('Authorization');
+
         try {
             $user = User::where('api_token', '=', $header)->firstOrFail();
 
