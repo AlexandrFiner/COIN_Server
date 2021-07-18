@@ -15,9 +15,9 @@ class UserController extends Controller
             return response()->json([
                 "error" => [
                     'error_code' => 404,
-                    'error_message' => $e
+                    'error_message' => 'Account does`nt exists'
                 ]
-            ], 404);
+            ], 200);
         }
         $token = Str::random(60);
         $user->update([
@@ -25,7 +25,7 @@ class UserController extends Controller
         ]);
         return response()->json([
             "response" => $user
-        ]);
+        ], 200);
     }
 
     public function register(Request $request) {
@@ -42,9 +42,9 @@ class UserController extends Controller
             return response()->json([
                 'error' => [
                     'error_code' => 100,
-                    'error_message' => $e
+                    'error_message' => 'Account already exists'
                 ]
-            ], 403);
+            ], 200);
         }
 
         return response()->json([
@@ -64,7 +64,7 @@ class UserController extends Controller
                         'error_code' => 404,
                         'error_message' => $e
                     ]
-                ], 404);
+                ], 200);
             }
         } else
             $user = $request->user();
@@ -88,7 +88,7 @@ class UserController extends Controller
                     'error_code' => 404,
                     'error_message' => $e
                 ]
-            ], 404);
+            ], 200);
         }
         return response()->json([
             "response" => $request->user()
