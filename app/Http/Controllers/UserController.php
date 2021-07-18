@@ -5,13 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use mysql_xdevapi\Exception;
 
 class UserController extends Controller
 {
     public function auth(Request $request) {
         try {
-            $user = User::findOrFail($request['id'])->makeVisible(['api_token']);
+            $user = User::where('login', '=', $request->user())->firstOrFail()->makeVisible(['api_token']);
         } catch (\Exception $e) {
             return response()->json([
                 "error" => [
@@ -34,10 +33,10 @@ class UserController extends Controller
 
         try {
             $user = User::create([
-                'login' => $request['login'],
-                'password' => $request['password'],
-                'provider' => $request['provider'],
-                'api_token' => Str::random(60)
+                'login' => $request->user(),
+                'password' => Str::random(60),        // Пароль
+                'provider' => 'vk',                         // Пока только VK
+                'api_token' => Str::random(60)        // Создаем ключ API
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -49,7 +48,7 @@ class UserController extends Controller
         }
 
         return response()->json([
-            "response" => $user
+            "response" => $user->makeVisible(['api_token'])
         ], 200);
     }
 
