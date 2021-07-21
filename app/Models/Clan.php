@@ -5,15 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class User extends Model
+class Clan extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'login', 'password', 'api_token', 'provider', 'balance_coin', 'mining_speed', 'group_vk', 'clan_id'
+        'title', 'description', 'owner_id', 'closed', 'slots'
     ];
 
     protected $hidden = [
-        'password', 'api_token', 'created_at', 'updated_at'
+        'created_at', 'updated_at'
     ];
 }

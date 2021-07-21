@@ -7,6 +7,7 @@ use \App\Http\Controllers\TopController;
 use \App\Http\Controllers\AdminController;
 use \App\Http\Controllers\ModeratorController;
 use \App\Http\Controllers\DonutController;
+use \App\Http\Controllers\ClanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,25 +21,24 @@ use \App\Http\Controllers\DonutController;
 */
 
 /*
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-*/
+ * Пользователь
+ */
+Route::middleware('cors', 'vkminiapps')->post('/users.auth', [UserController::class, 'auth']);          // Авторизация
+Route::middleware('cors', 'vkminiapps')->post('/users.register', [UserController::class, 'register']);  // Регистрация
+Route::middleware('cors', 'token')->post('/users.get', [UserController::class, 'get']);                 // Получение данных по ID
+Route::middleware('cors', 'token')->post('/users.earn', [UserController::class, 'earn']);               // Заработок
 
-// Авторизация
-Route::middleware('cors', 'vkminiapps')->post('/users.auth', [UserController::class, 'auth']);
-// Регистрация
-Route::middleware('cors', 'vkminiapps')->post('/users.register', [UserController::class, 'register']);
-
-// Получаем топ
+/*
+ * Топ
+ */
 Route::middleware('cors')->post('/top.get', [TopController::class, 'get']);
-
-// Получение данных по ID
-Route::middleware('cors', 'token')->post('/users.get', [UserController::class, 'get']);
-// Заработок
-Route::middleware('cors', 'token')->post('/users.earn', [UserController::class, 'earn']);
+Route::middleware('cors')->post('/top.get/groups', [TopController::class, 'getGroups']);
 
 
+/*
+ * Кланы
+ */
+Route::middleware('cors', 'token')->post('/clans.create', [ClanController::class, 'create']);
 
 // Админы
 Route::middleware('cors', 'token', 'admin')->post('/admin', [AdminController::class, 'index']);

@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Group;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class UserController extends Controller
@@ -21,16 +24,32 @@ class UserController extends Controller
         }
 
         $data = $request->request->all();
-        $group = 0;
+        $group_id = 0;
         if(isset($data['group'])) {
             // Если играет через группу, проверяем на существование в базе такой группы
-            $group = $data['group']['id'];
+            $group_id = $data['group']['id'];
+
+            try {
+                $group = Group::where('group_id', '=', $group_id)->firstOrFail();
+            } catch (\Exception $e) {
+                // Группы такой нет
+                if(isset($data['group']['isAdmin'])) {
+                    Group::create([
+                        'group_id' => $group_id,
+                        'admin_id' => $user->id,
+                        'balance_coin' => 0
+                    ]);
+                } else {
+                    $group_id = 0;
+                    // тут будем писать, что группы такой еще нет
+                }
+            }
         }
 
         $token = Str::random(60);
         $user->update([
             "api_token" => $token,
-            "group_vk" => $group
+            "group_vk" => $group_id
         ]);
 
         return response()->json([
@@ -86,9 +105,32 @@ class UserController extends Controller
 
     public function earn(Request $request) {
         // Заработок
+        $params = $request->all();
+
+        if(!isset($params['hash'])) {
+            return response()->json([
+                'error' => [
+                    'error_code' => 1000,
+                    'error_message' => "Wrong hash!"
+                ]
+            ], 200);
+        }
+
+        $hash = hash('sha256', $request->user()->api_token.'#CRYPT#alexfiner');
+
+        if($hash !== $params['hash']) {
+            return response()->json([
+                'error' => [
+                    'error_code' => 1000,
+                    'error_message' => "Wrong hash!"
+                ]
+            ], 200);
+        }
 
         try {
+            $token = Str::random(60);
             $request->user()->update([
+                "api_token" => $token,
                 'balance_coin' => $request->user()->balance_coin + $request->user()->mining_speed
             ]);
             // $user = User::
@@ -101,7 +143,7 @@ class UserController extends Controller
             ], 200);
         }
         return response()->json([
-            "response" => $request->user()
+            "response" => $request->user()->makeVisible(['api_token']),
         ], 200);
     }
 }
