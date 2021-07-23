@@ -30,6 +30,8 @@ class CreateUsersTable extends Migration
                 ->default(0);
             $table->unsignedBigInteger('clan_id')
                 ->default(0);
+            $table->string('role')
+                ->default('user');
             $table->timestamps();
         });
         /*

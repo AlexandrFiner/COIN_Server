@@ -39,6 +39,7 @@ Route::middleware('cors')->post('/top.get/groups', [TopController::class, 'getGr
  * Кланы
  */
 Route::middleware('cors', 'token')->post('/clans.create', [ClanController::class, 'create']);
+Route::middleware('cors', 'token')->post('/clans.search', [ClanController::class, 'search']);
 
 // Админы
 Route::middleware('cors', 'token', 'admin')->post('/admin', [AdminController::class, 'index']);
