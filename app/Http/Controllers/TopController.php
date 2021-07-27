@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Clan;
 use App\Models\Group;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -19,5 +20,11 @@ class TopController extends Controller
     {
         $groups = Group::orderBy('balance_coin', 'DESC')->limit(15)->get();
         return response()->json(["response" => $groups], 200);
+    }
+
+    public function getClans(Route $route): \Illuminate\Http\JsonResponse
+    {
+        $clans = Clan::orderBy('score', 'DESC')->limit(15)->get();
+        return response()->json(["response" => $clans], 200);
     }
 }

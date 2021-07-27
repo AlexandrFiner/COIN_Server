@@ -33,11 +33,13 @@ Route::middleware('cors', 'token')->post('/users.earn', [UserController::class, 
  */
 Route::middleware('cors')->post('/top.get', [TopController::class, 'get']);
 Route::middleware('cors')->post('/top.get/groups', [TopController::class, 'getGroups']);
+Route::middleware('cors')->post('/top.get/clans', [TopController::class, 'getClans']);
 
 
 /*
  * Кланы
  */
+Route::middleware('cors', 'token')->post('/clans.get', [ClanController::class, 'index']);
 Route::middleware('cors', 'token')->post('/clans.create', [ClanController::class, 'create']);
 Route::middleware('cors', 'token')->post('/clans.search', [ClanController::class, 'search']);
 

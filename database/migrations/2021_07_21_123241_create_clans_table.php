@@ -15,12 +15,19 @@ class CreateClansTable extends Migration
     {
         Schema::create('clans', function (Blueprint $table) {
             $table->id();
+            $table->string('avatar')
+                ->default(null);
             $table->string('title');
-            $table->text('description');
+            $table->text('description')
+                ->nullable(true);
             $table->unsignedBigInteger('owner_id')
                 ->nullable(false);
-            $table->boolean('closed')->default(true);   // Закрыт ли клан
-            $table->integer('slots')->default(50);      // Количество слотов
+            $table->boolean('closed')
+                ->default(true);   // Закрыт ли клан
+            $table->integer('slots')
+                ->default(50);      // Количество слотов
+            $table->float('score')
+                ->default(0.0);       // Очки рейтинга
             $table->timestamps();
         });
 

@@ -10,7 +10,7 @@ class Clan extends Model
     use HasFactory;
 
     protected $fillable = [
-        'title', 'description', 'owner_id', 'closed', 'slots'
+        'avatar', 'title', 'description', 'owner_id', 'closed', 'slots', 'score'
     ];
 
     protected $hidden = [
