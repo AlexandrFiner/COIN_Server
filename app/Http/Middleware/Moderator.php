@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Api\Response;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -16,12 +17,8 @@ class Moderator
      */
     public function handle(Request $request, Closure $next)
     {
-        if($request->user()->role !== 'admin' && $request->user()->role !== 'moderator' ) {
-            return response()->json(["error" => [
-                "error_code" => 403,
-                "error_message" => "You have no access to this url"
-            ]], 403);
-        }
+        if($request->user()->role !== 'admin' && $request->user()->role !== 'moderator' )
+            return Response::error(403, "You have no access to this url" , 403);
 
         return $next($request);
     }

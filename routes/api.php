@@ -42,6 +42,9 @@ Route::middleware('cors')->post('/top.get/clans', [TopController::class, 'getCla
 Route::middleware('cors', 'token')->post('/clans.get', [ClanController::class, 'index']);
 Route::middleware('cors', 'token')->post('/clans.create', [ClanController::class, 'create']);
 Route::middleware('cors', 'token')->post('/clans.search', [ClanController::class, 'search']);
+Route::middleware('cors', 'token')->post('/clans.update', [ClanController::class, 'update']);
+Route::middleware('cors', 'token')->post('/clans.updateAvatar', [ClanController::class, 'uploadAvatar']);
+Route::middleware('cors', 'token')->post('/clans.getUsers', [ClanController::class, 'getUsers']);
 
 // Админы
 Route::middleware('cors', 'token', 'admin')->post('/admin', [AdminController::class, 'index']);

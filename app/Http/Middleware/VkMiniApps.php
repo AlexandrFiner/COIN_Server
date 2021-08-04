@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Api\Response;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -35,23 +36,11 @@ class VkMiniApps
         $sign_params_query = http_build_query($sign_params);
         $sign = rtrim(strtr(base64_encode(hash_hmac('sha256', $sign_params_query, $client_secret, true)), '+/', '-_'), '=');
 
-        if(!isset($query_params['sign'])) {
-            return response()->json([
-                "error" => [
-                    "error_code" => 403,
-                    "error_message" => "You must send sign"
-                ]
-            ], 200);
-        }
+        if(!isset($query_params['sign']))
+            return Response::error(403, "You must send sign" , 200);
 
-        if($sign !== $query_params['sign']) {
-            return response()->json([
-                "error" => [
-                    "error_code" => 403,
-                    "error_message" => "You have wrong bearer token"
-                ]
-            ], 200);
-        }
+        if($sign !== $query_params['sign'])
+            return Response::error(403, "You have wrong bearer token" , 200);
 
 
         $user = $query_params['vk_user_id'];        // Кто сделал запрос

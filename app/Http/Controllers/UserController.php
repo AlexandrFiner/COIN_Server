@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Api\Response;
 use App\Models\Group;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class UserController extends Controller
@@ -15,12 +14,7 @@ class UserController extends Controller
         try {
             $user = User::where('login', '=', $request->user())->firstOrFail()->makeVisible(['api_token']);
         } catch (\Exception $e) {
-            return response()->json([
-                "error" => [
-                    'error_code' => 404,
-                    'error_message' => 'Account does`nt exists'
-                ]
-            ], 200);
+            return Response::error(404, "Account does not exists");
         }
 
         $data = $request->request->all();
@@ -41,20 +35,15 @@ class UserController extends Controller
                     ]);
                 } else {
                     $group_id = 0;
-                    // тут будем писать, что группы такой еще нет
+                    // TODO:: Группы еще нет
                 }
             }
         }
 
         $token = Str::random(60);
-        $user->update([
-            "api_token" => $token,
-            "group_vk" => $group_id
-        ]);
+        $user->update(["api_token" => $token, "group_vk" => $group_id]);
 
-        return response()->json([
-            "response" => $user
-        ], 200);
+        return Response::success($user);
     }
 
     public function register(Request $request) {
@@ -68,17 +57,10 @@ class UserController extends Controller
                 'api_token' => Str::random(60)        // Создаем ключ API
             ]);
         } catch (\Exception $e) {
-            return response()->json([
-                'error' => [
-                    'error_code' => 100,
-                    'error_message' => 'Account already exists'
-                ]
-            ], 200);
+            return Response::error(101, "Account already exists");
         }
 
-        return response()->json([
-            "response" => $user->makeVisible(['api_token'])
-        ], 200);
+        return Response::success($user->makeVisible(['api_token']));
     }
 
     public function get(Request $request) {
@@ -88,44 +70,24 @@ class UserController extends Controller
             try {
                 $user = User::findOrFail($request['id']);
             } catch (\Exception $e) {
-                return response()->json([
-                    'error' => [
-                        'error_code' => 404,
-                        'error_message' => $e
-                    ]
-                ], 200);
+                return Response::error(404, $e);
             }
         } else
             $user = $request->user();
 
-        return response()->json([
-            "response" => $user
-        ], 200);
+        return Response::success($user);
     }
 
     public function earn(Request $request) {
-        // Заработок
         $params = $request->all();
 
-        if(!isset($params['hash'])) {
-            return response()->json([
-                'error' => [
-                    'error_code' => 1000,
-                    'error_message' => "Wrong hash!"
-                ]
-            ], 200);
-        }
+        if(!isset($params['hash']))
+            return Response::error(1000, "Wrong hash!");
 
         $hash = hash('sha256', $request->user()->api_token.'#CRYPT#alexfiner');
 
-        if($hash !== $params['hash']) {
-            return response()->json([
-                'error' => [
-                    'error_code' => 1000,
-                    'error_message' => "Wrong hash!"
-                ]
-            ], 200);
-        }
+        if($hash !== $params['hash'])
+            return Response::error(1000, "Wrong hash!");
 
         try {
             $token = Str::random(60);
@@ -135,15 +97,9 @@ class UserController extends Controller
             ]);
             // $user = User::
         } catch (\Exception $e) {
-            return response()->json([
-                'error' => [
-                    'error_code' => 404,
-                    'error_message' => $e
-                ]
-            ], 200);
+            return Response::error(404, $e);
         }
-        return response()->json([
-            "response" => $request->user()->makeVisible(['api_token']),
-        ], 200);
+
+        return Response::success(404, $request->user()->makeVisible(['api_token']));
     }
 }

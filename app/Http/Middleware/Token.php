@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Api\Response;
 use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
@@ -21,15 +22,10 @@ class Token
 
         try {
             $user = User::where('api_token', '=', $header)->firstOrFail();
-
         } catch (\Exception $e) {
-            return response()->json([
-                'error' => [
-                    'error_code' => 1000,
-                    'error_message' => 'Wrong api token'
-                ]
-            ], 200);
+            return Response::error(1000, "Wrong api token" , 200);
         }
+
         $request->merge(['user' => $user ]);
         $request->setUserResolver(function () use ($user) {
             return $user;
