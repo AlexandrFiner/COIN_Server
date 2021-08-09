@@ -8,6 +8,8 @@ use \App\Http\Controllers\AdminController;
 use \App\Http\Controllers\ModeratorController;
 use \App\Http\Controllers\DonutController;
 use \App\Http\Controllers\ClanController;
+use \App\Http\Controllers\DecorationsController;
+use \App\Http\Controllers\AdvertsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,6 +47,18 @@ Route::middleware('cors', 'token')->post('/clans.search', [ClanController::class
 Route::middleware('cors', 'token')->post('/clans.update', [ClanController::class, 'update']);
 Route::middleware('cors', 'token')->post('/clans.updateAvatar', [ClanController::class, 'uploadAvatar']);
 Route::middleware('cors', 'token')->post('/clans.getUsers', [ClanController::class, 'getUsers']);
+
+/*
+ * Декорации
+ */
+Route::middleware('cors', 'token')->post('/decorations.get', [DecorationsController::class, 'index']);
+Route::middleware('cors', 'token')->post('/decorations.getItem', [DecorationsController::class, 'get']);
+
+/*
+ * Рекламные записи
+ */
+// AdBlock блокирует ad/advert, используем не очень понятное, banners
+Route::middleware('cors', 'token')->post('/banners.get', [AdvertsController::class, 'get']);
 
 // Админы
 Route::middleware('cors', 'token', 'admin')->post('/admin', [AdminController::class, 'index']);

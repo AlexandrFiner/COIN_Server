@@ -163,11 +163,15 @@ class ClanController extends Controller
                 $total = ClanMember::where('clan_id', '=', $clan->id)->count();
 
                 $users = ClanMember::where('clan_members.clan_id', '=', $clan->id)
+                    ->orderBy('clan_members.user_id', 'asc')
                     ->offset($offset)
                     ->limit($limit)
                     ->leftJoin('users', 'users.id', '=', 'clan_members.user_id')
                     ->select('users.login', 'clan_members.*')
-                    ->get();
+                    ->get()
+                    ->mapWithKeys(function ($item) {
+                        return [(int)$item['login'] => $item];
+                    })->toArray();
 
                 $offset += $limit;
                 $load_more = $total > $offset;

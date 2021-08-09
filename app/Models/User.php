@@ -10,7 +10,7 @@ class User extends Model
     use HasFactory;
 
     protected $fillable = [
-        'login', 'password', 'api_token', 'provider', 'balance_coin', 'mining_speed', 'group_vk', 'clan_id'
+        'login', 'password', 'api_token', 'provider', 'balance_coin', 'mining_speed', 'group_vk', 'clan_id', 'online', 'decoration_avatar', 'decoration_frame'
     ];
 
     protected $hidden = [

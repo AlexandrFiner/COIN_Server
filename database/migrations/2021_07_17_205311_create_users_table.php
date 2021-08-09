@@ -32,6 +32,14 @@ class CreateUsersTable extends Migration
                 ->default(0);
             $table->string('role')
                 ->default('user');
+            $table->boolean('is_don')
+                ->default(false);
+            $table->integer('online')
+                ->default(0);
+            $table->unsignedBigInteger('decoration_avatar')
+                ->default(0);
+            $table->unsignedBigInteger('decoration_frame')
+                ->default(0);
             $table->timestamps();
         });
         /*

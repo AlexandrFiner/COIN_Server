@@ -26,7 +26,10 @@ class Token
             return Response::error(1000, "Wrong api token" , 200);
         }
 
-        $request->merge(['user' => $user ]);
+        $user->online = time();
+        $user->update();
+
+        $request->merge(['user' => $user]);
         $request->setUserResolver(function () use ($user) {
             return $user;
         });
