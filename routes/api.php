@@ -25,46 +25,70 @@ use \App\Http\Controllers\AdvertsController;
 /*
  * Пользователь
  */
-Route::middleware('cors', 'vkminiapps')->post('/users.auth', [UserController::class, 'auth']);          // Авторизация
-Route::middleware('cors', 'vkminiapps')->post('/users.register', [UserController::class, 'register']);  // Регистрация
-Route::middleware('cors', 'token')->post('/users.get', [UserController::class, 'get']);                 // Получение данных по ID
-Route::middleware('cors', 'token')->post('/users.earn', [UserController::class, 'earn']);               // Заработок
+Route::group(['middleware' => 'vkminiapps'], function () {
+    Route::post('/users.auth', [UserController::class, 'auth']);                // Авторизация
+    Route::post('/users.register', [UserController::class, 'register']);        // Регистрация
+});
+
+Route::group(['middleware' => 'token'], function () {
+    Route::post('/users.get', [UserController::class, 'get']);                 // Получение данных по ID
+    Route::post('/users.earn', [UserController::class, 'earn']);               // Заработок
+});
 
 /*
  * Топ
  */
-Route::middleware('cors')->post('/top.get', [TopController::class, 'get']);
-Route::middleware('cors')->post('/top.get/groups', [TopController::class, 'getGroups']);
-Route::middleware('cors')->post('/top.get/clans', [TopController::class, 'getClans']);
-
+Route::group(['middleware' => 'token'], function () {
+    Route::post('/top.get', [TopController::class, 'get']);
+    Route::post('/top.get/groups', [TopController::class, 'getGroups']);
+    Route::post('/top.get/clans', [TopController::class, 'getClans']);
+});
 
 /*
  * Кланы
  */
-Route::middleware('cors', 'token')->post('/clans.get', [ClanController::class, 'index']);
-Route::middleware('cors', 'token')->post('/clans.create', [ClanController::class, 'create']);
-Route::middleware('cors', 'token')->post('/clans.search', [ClanController::class, 'search']);
-Route::middleware('cors', 'token')->post('/clans.update', [ClanController::class, 'update']);
-Route::middleware('cors', 'token')->post('/clans.updateAvatar', [ClanController::class, 'uploadAvatar']);
-Route::middleware('cors', 'token')->post('/clans.getUsers', [ClanController::class, 'getUsers']);
+Route::group(['middleware' => 'token'], function () {
+    Route::post('/clans.get', [ClanController::class, 'index']);
+    Route::post('/clans.create', [ClanController::class, 'create']);
+    Route::post('/clans.search', [ClanController::class, 'search']);
+    Route::post('/clans.update', [ClanController::class, 'update']);
+    Route::post('/clans.updateAvatar', [ClanController::class, 'uploadAvatar']);
+    Route::post('/clans.getUsers', [ClanController::class, 'getUsers']);
+});
 
 /*
  * Декорации
  */
-Route::middleware('cors', 'token')->post('/decorations.get', [DecorationsController::class, 'index']);
-Route::middleware('cors', 'token')->post('/decorations.getItem', [DecorationsController::class, 'get']);
+Route::group(['middleware' => 'token'], function () {
+    Route::post('/decorations.get', [DecorationsController::class, 'index']);
+    Route::post('/decorations.getItem', [DecorationsController::class, 'get']);
+});
 
 /*
  * Рекламные записи
  */
-// AdBlock блокирует ad/advert, используем не очень понятное, banners
-Route::middleware('cors', 'token')->post('/banners.get', [AdvertsController::class, 'get']);
+Route::group(['middleware' => 'token'], function () {
+    // AdBlock блокирует ad/advert, используем не очень понятное, banners
+    Route::post('/banners.get', [AdvertsController::class, 'get']);
+});
 
 // Админы
-Route::middleware('cors', 'token', 'admin')->post('/admin', [AdminController::class, 'index']);
+Route::group(['middleware' => 'token'], function () {
+    Route::group(['middleware' => 'admin'], function () {
+        Route::post('/admin', [AdminController::class, 'index']);
+    });
+});
 
 // Модераторы
-Route::middleware('cors', 'token', 'moderator')->post('/moderator', [ModeratorController::class, 'index']);
+Route::group(['middleware' => 'token'], function () {
+    Route::group(['middleware' => 'moderator'], function () {
+        Route::post('/moderator', [ModeratorController::class, 'index']);
+    });
+});
 
 // Доны
-Route::middleware('cors', 'token', 'donut')->post('/donut', [DonutController::class, 'index']);
+Route::group(['middleware' => 'token'], function () {
+    Route::group(['middleware' => 'donut'], function () {
+        Route::post('/donut', [DonutController::class, 'index']);
+    });
+});
