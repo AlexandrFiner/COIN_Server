@@ -13,8 +13,8 @@ class AdvertsController extends Controller
         $type = isset($request['type']) ? $request['type'] : 'banner';
         $page = isset($request['page']) ? $request['page'] : 'main';
 
-        $result = Advert::where('type', '=', $type)
-            ->where('place', '=', $page)
+        $result = Advert::where('type', $type)
+            ->where('place', $page)
             ->get();
 
         return Response::success($result);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Achievements\UserCreateClan;
 use App\Models\Clan;
 use App\Models\ClanMember;
 use App\Models\User;
@@ -16,7 +17,7 @@ class ClanController extends Controller
         $clan_member = $this->getMemberData($request, $clan);
         $role = $clan_member['role'];
 
-        $clanMembers = User::where('clan_id', '=', $clan_id)->orderBy('id', 'DESC')->take(50)->get()->mapWithKeys(function ($item) {
+        $clanMembers = User::where('clan_id', $clan_id)->orderBy('id', 'DESC')->take(50)->get()->mapWithKeys(function ($item) {
             return [(int)$item['login'] => $item];
         })->toArray();
 
@@ -68,6 +69,7 @@ class ClanController extends Controller
         ]);
 
         $request->user()->update(["clan_id" => $clan->id]);
+        $request->user()->unlock(new UserCreateClan());
 
         return Response::success($clan);
     }
@@ -78,6 +80,7 @@ class ClanController extends Controller
         if(empty($search))
             return Response::error(101, "Params not sended");
 
+        // $request->user()->unlock(new UserCreateClan());
         $clans = Clan::where([['title','LIKE',"%".$search."%"]])->orderBy('id', 'DESC')->take(5)->get();
         return response()->json(['response' => $clans], 200);
     }
@@ -152,7 +155,7 @@ class ClanController extends Controller
                     ], 200);
                 }
 
-                $users = ClanMember::where('clan_id', '=', $clan->id)
+                $users = ClanMember::where('clan_id', $clan->id)
                     ->offset($offset)
                     ->limit($limit)
                     ->get();
@@ -160,9 +163,9 @@ class ClanController extends Controller
                 break;
             }
             default: {
-                $total = ClanMember::where('clan_id', '=', $clan->id)->count();
+                $total = ClanMember::where('clan_id', $clan->id)->count();
 
-                $users = ClanMember::where('clan_members.clan_id', '=', $clan->id)
+                $users = ClanMember::where('clan_members.clan_id', $clan->id)
                     ->orderBy('clan_members.user_id', 'asc')
                     ->offset($offset)
                     ->limit($limit)
@@ -215,7 +218,7 @@ class ClanController extends Controller
 
     private function getMemberData(Request $request, $clan) {
         try {
-            $clan_member = ClanMember::where('user_id', '=', $request->user()->id)->where('clan_id', '=', $clan->id)->firstOrFail();
+            $clan_member = ClanMember::where('user_id', $request->user()->id)->where('clan_id', $clan->id)->firstOrFail();
         } catch (\Exception $e) {
             $request->user()->update([
                 "clan_id" => 0

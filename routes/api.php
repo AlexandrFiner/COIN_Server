@@ -31,8 +31,10 @@ Route::group(['middleware' => 'vkminiapps'], function () {
 });
 
 Route::group(['middleware' => 'token'], function () {
-    Route::post('/users.get', [UserController::class, 'get']);                 // Получение данных по ID
-    Route::post('/users.earn', [UserController::class, 'earn']);               // Заработок
+    Route::post('/users.get', [UserController::class, 'get']);                      // Получение данных по ID
+    Route::post('/users.earn', [UserController::class, 'earn']);                    // Заработок
+    Route::post('/users.getDecorations', [UserController::class, 'getDecorations']);
+    Route::post('/users.setDecorations', [UserController::class, 'setDecorations']);
 });
 
 /*

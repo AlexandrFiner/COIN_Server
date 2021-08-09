@@ -6,6 +6,7 @@ use App\Models\Api\Response;
 use App\Models\Decoration;
 use App\Models\Group;
 use App\Models\User;
+use App\Models\UserDecoration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -13,7 +14,7 @@ class UserController extends Controller
 {
     public function auth(Request $request) {
         try {
-            $user = User::where('login', '=', $request->user())->firstOrFail()->makeVisible(['api_token']);
+            $user = User::where('login', $request->user())->firstOrFail()->makeVisible(['api_token']);
         } catch (\Exception $e) {
             return Response::error(404, "Account does not exists");
         }
@@ -25,7 +26,7 @@ class UserController extends Controller
             $group_id = $data['group']['id'];
 
             try {
-                Group::where('group_id', '=', $group_id)->firstOrFail();
+                Group::where('group_id', $group_id)->firstOrFail();
             } catch (\Exception $e) {
                 // Группы такой нет
                 if(isset($data['group']['isAdmin'])) {
@@ -70,12 +71,12 @@ class UserController extends Controller
 
         if(isset($request['id'])) {
             try {
-                $user = User::where('login', '=', $request['id'])->firstOrFail();
+                $user = User::where('login', $request['id'])->firstOrFail();
                 if($user['decoration_avatar'])
-                    $user['avatar'] = Decoration::where('id', '=', $user['decoration_avatar'])->first();
+                    $user['avatar'] = Decoration::where('id', $user['decoration_avatar'])->first();
 
                 if($user['decoration_frame'])
-                    $user['frame'] = Decoration::where('id', '=', $user['decoration_frame'])->first();
+                    $user['frame'] = Decoration::where('id', $user['decoration_frame'])->first();
 
             } catch (\Exception $e) {
                 return Response::error(404, $e);
@@ -109,5 +110,90 @@ class UserController extends Controller
         }
 
         return Response::success(200, $request->user()->makeVisible(['api_token']));
+    }
+
+    public function getDecorations(Request $request) {
+        if(isset($request['id'])) {
+            try {
+                $user = User::where('login', $request['id'])->firstOrFail();
+                /*
+                if($user['decoration_avatar'])
+                    $user['avatar'] = Decoration::where('id', $user['decoration_avatar'])->first();
+
+                if($user['decoration_frame'])
+                    $user['frame'] = Decoration::where('id', $user['decoration_frame'])->first();
+                */
+            } catch (\Exception $e) {
+                return Response::error(404, $e);
+            }
+        } else
+            $user = $request->user();
+
+        $type = isset($request['type']) ? $request['type'] : 'all';
+        $decorations = [];
+        switch ($type) {
+            case 'avatars': {
+                $decorations = UserDecoration::where('user_decorations.user_id', $user->id)
+                    ->leftJoin('decorations', 'decorations.id', '=', 'user_decorations.decoration_id')
+                    ->select('decorations.*')
+                    ->where('decorations.type', 'avatar')
+                    ->get();
+                break;
+            }
+            case 'frames': {
+                $decorations = UserDecoration::where('user_decorations.user_id', $user->id)
+                    ->leftJoin('decorations', 'decorations.id', '=', 'user_decorations.decoration_id')
+                    ->select('decorations.*')
+                    ->where('decorations.type', 'frame')
+                    ->get();
+                break;
+            }
+            default: {
+                return Response::error(404, "Wrong type");
+            }
+        }
+
+        return Response::success(["user" => $user, "decorations" => $decorations]);
+    }
+
+    public function setDecorations(Request $request) {
+        /*
+         * TODO: Переписать более красиво
+         */
+
+        $id = isset($request['id']) ? $request['id'] : 0;
+        $type = isset($request['type']) ? $request['type'] : 'set';
+
+        if($type === 'reset_frame') {
+            $request->user()->decoration_frame = 0;
+            $request->user()->update();
+            return Response::success($request->user());
+        }
+        if($type === 'reset_avatar') {
+            $request->user()->decoration_avatar = 0;
+            $request->user()->update();
+            return Response::success($request->user());
+        }
+
+        try {
+            $decoration = Decoration::where('id', $id)->firstOrFail();
+        } catch (\Exception $e) {
+            return Response::error(404, "Decoration not found");
+        }
+
+        if(!Decoration::isUserHas($request->user()->id, $decoration->id))
+            return Response::error(403, "User hasnt decoration");
+
+        if($decoration->type === 'frame') {
+            $request->user()->decoration_frame = $decoration->id;
+            $request->user()->update();
+            return Response::success($request->user());
+        } else if($decoration->type === 'avatar') {
+            $request->user()->decoration_avatar = $decoration->id;
+            $request->user()->update();
+            return Response::success($request->user());
+        }
+
+        return Response::error(500, "Wrong decoration type");
     }
 }
