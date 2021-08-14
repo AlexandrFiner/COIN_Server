@@ -60,6 +60,7 @@ class UserController extends Controller
                 'online' => time(),                         // Был в сети последний раз
             ]);
         } catch (\Exception $e) {
+            // abort(100, 'Account already exists');
             return Response::error(101, "Account already exists");
         }
 
@@ -84,6 +85,7 @@ class UserController extends Controller
         } else
             $user = $request->user();
 
+        $user['achievements'] = $user->unlockedAchievements();
         return Response::success($user);
     }
 
